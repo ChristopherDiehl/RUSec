@@ -5,3 +5,6 @@ def arp_monitor_callback(pkt):
 
 #calls function arp_monitor_callback
 sniff(prn=arp_monitor_callback, filter="arp",store=0)
+
+#ifconfig |grep HWaddr |grep wlan0
+#
