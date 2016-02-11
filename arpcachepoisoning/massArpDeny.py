@@ -1,11 +1,11 @@
 from scapy.all import *
 import time
 import sys
-
-#gate is gateways ip argv[1]
-#victim is victims ip argv[2]
-#use sendp
-#mac = your mac argv[3]
+#fill in mac, gate, and victim
+#gate is gateways ip 
+#victim is victims ip 
+#use sendp 
+#mac = your mac 
 cmdargs = str(sys.argv)
 op = 1
 #good way to deny internet to victim is removing time.sleep(x) and sending arpToVictim

