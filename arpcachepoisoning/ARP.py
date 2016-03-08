@@ -5,11 +5,15 @@ class ARP:
 	def enable_forwarding(self):
 		os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
 
-	def arp_monitor(self, filename):
-		pkts =sniff(filter="arp" offline=filename)
-		for pkts in arp:
-			print pkt.summary()
+	#count is how many packets to count
+	#filename is assumed to be valid
+	#returns 1 when done
+	def arp_monitor(self, filename, count):
+		pkts =sniff(filter="arp", count=count)
+		wrpcap(filename,pkts)
+		return 1;
 
+    #doesn't store anythng
 	def arp_monitor(self):
 		sniff(prn=arp_monitor_callback,filter="arp",store=0)
 
@@ -37,4 +41,5 @@ class ARP:
 	    return ':'.join(['%02x' % ord(char) for char in info[18:24]])
 
 #calls function arp_monitor_callback
-	def __init__ (self)
+	def __init__ (self):
+		enable_forwarding(self)

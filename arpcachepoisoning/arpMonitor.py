@@ -4,4 +4,4 @@ def arp_monitor_callback(pkt):
 		return pkt.sprintf("%ARP.hwsrc% %ARP.psrc%")
 
 #calls function arp_monitor_callback
-sniff(prn=arp_monitor_callback, filter="arp",store=0)
+pkt = sniff(prn=arp_monitor_callback, filter="arp",count=2)
