@@ -1,0 +1,176 @@
+2/22/16
+
+file descriptor - c abstraction for a file
+	-general input output device
+	-could be socket, nic, or stdout, stdin
+	-target for io
+
+
+fopen(pathname, flags)
+	pathname: "./afilenmae.txt"
+	flags:  READABLE...CREATEONOPEN....(symbolic names)
+			1001001	   0101111
+	-to combine, or READABLE bit pattern with CREATEONOPNE
+			-READABLE | CREATEONOPEN
+	-flags are ways to open file.... read, write, what to do if file doesn't exist
+	-read
+	-write (buffer,length)
+		0 return value: wrote zero bytes
+		!0 return value: number of bytes succesfful wrote
+		-returns number of bytes successfully written
+	-fclose(fd)
+
+ex:
+
+int written = 0;
+int tries = 0;
+
+while (written < buffer){
+	written = write(fd,buffer+written,length-written);
+	if(written < buffer){
+		printf("Unable to successfully write to buffer\n");
+		tries++;
+	}
+
+}
+or
+int written = 0;
+while (length > 0){
+	written = write(fd, buffer, length);
+
+	buffer = buffer + written;
+	length = length - written;
+}
+
+
+-CRUDE
+-needs char * buffer;
+
+
+==========================================================
+
+inodes: think mementry but for files
+	-an inode can point to an inode (directories to files)
+	-directories && files are inodes
+
+directory type I/O:
+
+dirfd = opendir("./pathname");
+dirent == directory file format struct
+struct dirent anentry <---- deaddir(dirfd)
+anentry->d_type
+	-if == DT_REG then regular file
+	-if == DT_DIR then directory and do directory stuff bruh
+
+readdir goes through the directory files, cant go back
+/adir:
+	file0.txt <---
+	file1.txt <---
+
+if(anentry->d_type == DT_REG)
+{
+	//its a file
+	"file0.txt" ,-----anentry->d_name //only name of files, not path
+	//need to know beginning of pathname: ./adir/file0.txt
+	//need to prepend direcotry name
+	//if go into anothe dir then prepend another directory name
+	// need to have a char array you feed forward
+	//start with ./
+	//if found dir append to path then go down 
+	//if found file open with fopen
+	// 				CLASSIC RECURSION
+
+}
+
+cant write raw bytes without fprintf("%s\n", );
+has to be type
+	===============================
+PROCESSES
+
+-fork()
+	- clones PROCESSES
+	...except for PID, PPID and address space (PID = Process ID, PPID = Parent Process ID)
+	-on return:
+	-returns child's PID to Parent
+	-returns 0 to child process 
+
+	-how is child process different:
+	-same code and variables
+	-compute same thing
+-exec()
+	-REPLACES current code with new stuff
+	-process state gets reformatted/reset for new code's constrains
+	-replaces its function calls, never returns unless something failed
+
+
+int pid = fork()
+if(pid==0)
+{
+	exec stuff...
+}else
+{
+	//im the parent
+	save pid somewhere
+}
+
+wait(childs pid)
+	-stops parent process until child process is done
+	-tells the OS the parent is done with the child process
+		-and once the child returns, its resources can be reclaimed
+	-if you don't wait for a child process then child process never freed
+
+Zombie Process: child process that has returned, but whose parents has not yet waited on it
+
+init 
+	-unforked
+	-initial bootstrapping process
+	-PID 0
+	-gets rid of zombie process
+		-becomes zombie foster parent
+		-calls wait on zombie
+	-fork called once returned twice
+
+Signals
+	-if code breaks, signal goes to OS then resumes
+	signal: indicates some situation that must be dealt with before the code continues
+	signal handler: reroute certain signals to your own code
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

