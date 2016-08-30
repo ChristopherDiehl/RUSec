@@ -1,0 +1,6 @@
+RANSOMWARE:
+
+-Use openssl to actually encrypt/decrypt the files.
+-use my previously created file transversal program to transverse all files/ lock em down...
+-do cool stuff
+-need to get rsa public key from server to setup public 

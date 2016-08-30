@@ -1,0 +1,137 @@
+KEY NOTES:
+
+-SANATIZE
+-Server side data is not neccessarily clean -- or good
+-never trust user data
+-sometimes you can send valid data but in an invalid way such as an valid account number on a bank account that is not yours
+
+handle data well, block known bad doesn't really work because you can easily get around this
+
+if the application manipulates character input by removing keywords you can get around it easily..
+For example if the application removes any <script> keywords:
+<scr<script>ipt>
+
+you can use double url encoding:
+for example a sql script apostrophe can be like
+%2527 which becomes %27 which is unicode for apostrophe
+if they strip the apostrophe then you can do something like:
+%%2727 which becomes %27
+
+if you encode javascript or html characters then even if it is blocked, it may still show up in the url causing it to execute if decoded
+
+HANDLING ATTACKERS
+-Maintain AUDIT logs
+-report to admins
+-react to attacks
+-handle erros
+
+MOST AUDIT LOGS CONTAIN:
+-time of log
+-ip address of log
+-users account if authenticated
+
+-if you can access audit logs then you have access to everything
+
+You can always url encode special characters if you need to smuggle stuff in
+-you need to url decode though
+
+
+HTTP:
+client sends request, server sends response
+basically connectionless, although http does use tcp to carry some kind of state
+each exchange of request,response can be a separate tcp connection
+
+All HTTP messages (requests and responses) consist of one or more headers, each on a separate line, followed by a mandatory blank line, followed by an optional message body. A typical HTTP request is as follows:
+
+ GET requests do not have a message body, so no further data follows the blan
+ The only HTTP versions in common use on the Internet are 1.0 and 1.1, and most browsers use version 1.1 by default.
+  Referer header is used to indicate the URL from which the request originated (for example, because the user clicked a link on that page).
+User agent gent header is used to provide information about the browser or other client software that generated the request
+The Host header specifies the hostname that appeared in the full URL being accessed. 
+The cookie is used for any additional parameters
+
+
+Here are some other points of interest in the response:
+n The Server header contains a banner indicating the web server software being used, and sometimes other details such as installed modules and the server operating system. The information contained may or may not be accurate.
+n The Set-Cookie header issues the browser a further cookie; this is sub- mitted back in the Cookie header of subsequent requests to this server.
+n The Pragma header instructs the browser not to store the response in its cache. The Expires header indicates that the response content expired in the past and therefore should not be cached. These instructions are frequently issued when dynamic content is being returned to ensure that browsers obtain a fresh version of this content on subsequent occasions.
+n Almost all HTTP responses contain a message body following the blank line after the headers. The Content-Type header indicates that the body of this message contains an HTML document.
+n The Content-Length header indicates the length of the message body in bytes.
+
+
+POST
+-Used to perform actions
+-when bookmark, no params saved
+
+GET
+-used to retrieve resources
+- It can be used to send parameters to the requested resource in the URL query string.
+-can bookmark and have params saved
+
+
+TRACE
+-can be used to identify proxy between server and client
+
+PUT 
+-attempts to upload the specified resource to the server, using the con- tent contained in the body of the request. If this method is enabled, you may be able to leverage it to attack the application, such as by uploading an arbitrary script and executing it on the server
+
+HEAD
+-checks if a resource is even there, good to use before a get to see if requested resource is even around
+
+CHAPTER 3
+
+HTTP HEADERS 
+	General Headers
+	- Connectio- tells the other end of the communicatio- whether it should close the TCP connectio- after the HTTP transmissio- has completed or keep it ope- for further messages.
+	- Content-Encoding specifies what kind of encoding is being used for the content contained i- the message body, such as gzip, which is used by some applications to compress responses for faster transmission.
+	- Content-Length specifies the length of the message body, i- bytes (except i- the case of responses to HEAD requests, whe- it indicates the length of the body i- the response to the corresponding GET request).
+	- Content-Type specifies the type of content contained i- the message body, such as text/html for HTML documents.
+	- Transfer-Encoding specifies any encoding that was performed o- the message body to facilitate its transfer over HTTP. It is normally used to specify chunked encoding whe- this is employed.
+	Request Headers
+	- Accept tells the server what kinds of content the client is willing to accept, such as image types, office document formats, and so on.
+	- Accept-Encoding tells the server what kinds of content encoding the client is willing to accept.
+	- Authorizatio- submits credentials to the server for one of the built-i- HTTP authenticatio- types.
+	- Cookie submits cookies to the server that the server previously issued. - Host specifies the hostname that appeared i- the full URL being requested.
+	- Origin is used in cross-domain Ajax requests to indicate the domain from which the request originated (see Chapter 13).
+
+
+
+
+COOKIES:
+A server issues a cookie using the Set-Cookie response header, as you have seen:
+  Set-Cookie: tracking=tI8rk7joMx44S2Uu85nSWc
+The user’s browser then automatically adds the following header to subsequent requests back to the same server:
+  Cookie: tracking=tI8rk7joMx44S2Uu85nSWc
+
+
+AUTHENTICATION:
+asic is a simple authentication mechanism that sends user credentials as a Base64-encoded string in a request header with each message.
+n NTLM is a challenge-response mechanism and uses a version of the Windows NTLM protocol.
+n Digest is a challenge-response mechanism and uses MD5 checksums of a nonce with the user’s credentials.
+
+WEB SPIDERING
+
+-Basically map out the site
+
+DOWNSIDES OF BURP:
+- Unusual navigation mechanisms (such as menus dynamically created and handled using complicated JavaScript code) often are not handled properly by these tools, so they may miss whole areas of an application.
+- Links buried within compiled client-side objects such as Flash or Java applets may not be picked up by a spider.
+- Multistage functionality often implements fine-grained input validation checks, which do not accept the values that may be submitted by an auto- mated tool. For example, a user registration form may contain fields for name, e-mail address, telephone number, and zip code. An automated
+
+-when a site uses same url to serve multiple forms of content
+-when using an authenticated spider
+	-most spiders will eventually request logout
+	-if spider requests too many things, session may be terminated defensively server side
+	-if the application uses per page tokens, the spider will request for them out of hand, breaking the web application and forcing a repeated login
+
+
+HACK STEPS
+1. Configure your browser to use either Burp or WebScarab as a local proxy (see Chapter 20 for specific details about how to do this if you’re unsure).
+2. Browse the entire application normally, attempting to visit every link/URL you discover, submitting every form, and proceeding through all multi- step functions to completion. Try browsing with JavaScript enabled and disabled, and with cookies enabled and disabled. Many applications can handle various browser configurations, and you may reach different con- tent and code paths within the application.
+3. Review the site map generated by the proxy/spider tool, and identify
+any application content or functions that you did not browse manually. Establish how the spider enumerated each item. For example, in Burp Spider, check the Linked From details. Using your browser, access the item manually so that the response from the server is parsed by the proxy/spi- der tool to identify any further content. Continue this step recursively until no further content or functionality is identified.
+4. Optionally, tell the tool to actively spider the site using all of the already enumerated content as a starting point. To do this, first identify any URLs that are dangerous or likely to break the application session, and config- ure the spider to exclude these from its scope. Run the spider and review the results for any additional content it discovers.
+The site map generated by the proxy/spider tool contains a wealth of infor- mation about the target application, which will be useful later in identifying the various attack surfaces exposed by the application.
+
+
+Burp Intruder can be used to iterate through a list of common directory names and capture details of the server’s responses, which can be reviewed to identify valid directories.
