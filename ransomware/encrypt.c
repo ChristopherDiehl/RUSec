@@ -14,7 +14,8 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 
 	size_t file_length = get_file_length(filename) +1;
 	FILE * read_file = fopen(filename,"r");
-	FILE * encrypted_file = fopen(filename,"wb");
+
+	FILE * encrypted_file = fopen(concat(filename),"wb");
 
 	const unsigned BUFFSIZE=4096;
 	unsigned char * r_buffer = malloc(file_length);
@@ -28,7 +29,7 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 	fread(r_buffer,1,file_length, read_file);
 	fclose(read_file);
 	remove(filename);
-	
+
 	//Set up encryption
 	EVP_CIPHER_CTX ctx;
 	EVP_EncryptInit(&ctx,EVP_aes_128_cbc(),ckey,iv);
@@ -40,14 +41,17 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 
 	free(c_buffer);
 	free(r_buffer);
-
-
-
-
+	fclose(encrypted_file);
 
 }
 
-
+char * concat(char * filename)
+{
+	char * return_val = malloc(strlen(filename) +2);
+	strcpy(return_val,filename);
+	strcpy(return_val,"c");
+	return concat;
+}
 size_t get_file_length(char * filename)
 {
     struct stat st;
