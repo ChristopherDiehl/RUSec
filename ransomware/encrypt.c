@@ -10,14 +10,24 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 	unsigned char * c_buffer = malloc(file_length + BUFFSIZE);
 	int out1 = 0; int out2 = 0;
 
+	if (plaintext_file == 0) {
+		printf("[-] File not found \n");
+		exit(-1);
+	}
+
+	//printf("key: %u iv: %u",*(unsigned int *)key,*(unsigned int *)iv);
+
+	EVP_CIPHER_CTX ctx;
+	if ( 1 != EVP_EncryptInit_ex(&ctx,EVP_aes_256_cbc(),NULL,key,iv))
+		exit(-1);
+	
+	EVP_EncryptUpdate(&ctx,c_buffer,&out1,p_buffer,file_length);
+	EVP_EncryptFinal(&ctx,c_buffer + out1,&out2);
+
 	fread(p_buffer,1,file_length, plaintext_file);
 	fclose(plaintext_file);
 	remove(filename);
 
-	EVP_CIPHER_CTX ctx;
-	EVP_EncryptInit_ex(&ctx,EVP_aes_256_cbc(),NULL,key,iv);
-	EVP_EncryptUpdate(&ctx,c_buffer,&out1,p_buffer,file_length);
-	EVP_EncryptFinal(&ctx,c_buffer + out1,&out2);
 
 	FILE * encrypted_file = fopen(filename,"wb");
 	fwrite(c_buffer,1,out1 + out2,encrypted_file);
