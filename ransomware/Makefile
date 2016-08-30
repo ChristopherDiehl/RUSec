@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -o
 DEPS = encrypt.c SimpleList.c
-OBJECTS = encrypt.o SimpleList.o
+OBJECTS =encrypt.o SimpleList.o
 EXECS = driver
 
 all:
