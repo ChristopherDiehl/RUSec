@@ -6,30 +6,43 @@
  * arg2 = key
  * arg3 = iv
 */
-int encrypt (int argc, char ** argv)
+int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 {
 	if (argc != 4) {
 		printf("[filename] [key] [iv]");
 	}
 
-	char * filename = argv[1];
 	size_t file_length = get_file_length(filename) +1;
-	FILE * file = fopen(filename,"r");
+	FILE * read_file = fopen(filename,"r");
+	FILE * encrypted_file = fopen(filename,"wb");
 
+	const unsigned BUFFSIZE=4096;
+	unsigned char * r_buffer = malloc(file_length);
+	unsigned char * c_buffer = malloc(file_length + BUFFSIZE);
+	int out1 = 0; int out2 = 0;
 
-	if(file == 0)
-	{
-		printf("[-] Invalid file name passed to encrypt: %s\n",filename);
-		return 0;
-	}
+	unsigned blocksize;
+	int out_len;
+	int return_val;
 
-	char * buffer = calloc(1,file_length);
-
-	fread(buffer,file_length -1,1,file);
-	fclose(file);
+	fread(r_buffer,1,file_length, read_file);
+	fclose(read_file);
 	remove(filename);
-
 	
+	//Set up encryption
+	EVP_CIPHER_CTX ctx;
+	EVP_EncryptInit(&ctx,EVP_aes_128_cbc(),ckey,iv);
+	EVP_EncryptUpdate(&ctx,c_buffer,&outLen1,r_buffer,file_length);
+	EVP_EncryptFinal(&ctx,c_buffer + outLen1,&outLen2);
+	fwrite(c_buffer,sizeof(char),outLen1 + outLen2,encrypted_file);
+
+	// Free memory
+
+	free(c_buffer);
+	free(r_buffer);
+
+
+
 
 
 }

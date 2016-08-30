@@ -23,3 +23,5 @@ size_t get_file_length(char * filename);
  * arg3 = iv
 */
 int encrypt(int argc, char ** argv);
+
+const unsigned BUFFSIZE=4096;
