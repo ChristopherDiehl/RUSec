@@ -12,9 +12,10 @@ int main (int argc, char ** argv)
 	unsigned char *iv = (unsigned char *)"01234567890123456";
 
 	printf("[-] Encrypting Now\n");
-	encrypt("file_to_encrypt.txt",key,iv);
+	//encrypt("file_to_encrypt.txt",key,iv);
 	printf("[-] Encryption finished\n");
 
-	//decrypt("[-]Decrypting Now\n");
+	decrypt("file_to_encrypt.txt",key,iv);
+	printf("Decryption finished");
 	return 1;
 }

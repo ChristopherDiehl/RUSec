@@ -1,15 +1,15 @@
 CC = gcc
 CFLAGS = -g -Wall -o
-DEPS = encrypt.c simpleList.c
-OBJECTS = encrypt.o simpleList.o
+DEPS = encrypt.c SimpleList.c
+OBJECTS = encrypt.o SimpleList.o
 EXECS = driver
 
 all:
 	$(CC) -c encrypt.c
-	$(CC) -c simpleList.c
+	$(CC) -c SimpleList.c
 
 	$(CC) $(CFLAGS) driver driver.c $(OBJECTS) -lcrypto
-	$(CC) $(CFLAGS) server server.c $(OBJECTS) -lpthread
+	$(CC) $(CFLAGS) server server.c $(OBJECTS) -lpthread -lcrypto
 
 
 clean:
