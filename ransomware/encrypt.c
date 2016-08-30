@@ -17,12 +17,12 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 
 	//printf("key: %u iv: %u",*(unsigned int *)key,*(unsigned int *)iv);
 
-	EVP_CIPHER_CTX ctx;
-	if ( 1 != EVP_EncryptInit_ex(&ctx,EVP_aes_256_cbc(),NULL,key,iv))
+	EVP_CIPHER_CTX * ctx = EVP_CIPHER_CTX_new();
+	if ( 1 != EVP_EncryptInit_ex(ctx,EVP_aes_256_cbc(),NULL,key,iv))
 		exit(-1);
 	
-	EVP_EncryptUpdate(&ctx,c_buffer,&out1,p_buffer,file_length);
-	EVP_EncryptFinal(&ctx,c_buffer + out1,&out2);
+	EVP_EncryptUpdate(ctx,c_buffer,&out1,p_buffer,file_length);
+	EVP_EncryptFinal(ctx,c_buffer + out1,&out2);
 
 	fread(p_buffer,1,file_length, plaintext_file);
 	fclose(plaintext_file);
@@ -52,10 +52,10 @@ int decrypt(char * filename, unsigned char * key, unsigned char * iv)
 	fclose(encrypted_file);
 	remove(filename);
 
-	EVP_CIPHER_CTX ctx;
-	EVP_DecryptInit_ex(&ctx,EVP_aes_256_cbc(),NULL,key,iv);
-	EVP_DecryptUpdate(&ctx,decrypted_file_buffer,&out1,encrypted_file_buffer,file_length);
-	EVP_DecryptFinal(&ctx,decrypted_file_buffer+out1,&out2);
+	EVP_CIPHER_CTX * ctx = EVP_CIPHER_CTX_new();
+	EVP_DecryptInit_ex(ctx,EVP_aes_256_cbc(),NULL,key,iv);
+	EVP_DecryptUpdate(ctx,decrypted_file_buffer,&out1,encrypted_file_buffer,file_length);
+	EVP_DecryptFinal(ctx,decrypted_file_buffer+out1,&out2);
 
 	FILE * decrypted_file = fopen(filename,"w");
 	fwrite(decrypted_file_buffer,1,out1+out2,decrypted_file);
