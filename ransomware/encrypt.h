@@ -15,13 +15,11 @@
 
 /* Preproccessor statements*/
 size_t get_file_length(char * filename);
+int encrypt (char * filename, unsigned char * key, unsigned char * iv);
+int decrypt(char * filename, unsigned char * key, unsigned char * iv);
+char * concat(char * filename);
+char * deconcat(char * filename);
 
+#define BUFFSIZE 4096
 
-/*
- * arg1 = filename 
- * arg2 = key
- * arg3 = iv
-*/
-int encrypt(int argc, char ** argv);
-
-const unsigned BUFFSIZE=4096;
+//key needs to be 256, iv needs to be 128
