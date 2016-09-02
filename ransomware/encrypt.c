@@ -1,8 +1,5 @@
 #include "encrypt.h"
 
-
-
-
 int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 {
 
@@ -17,7 +14,6 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 	fclose(plaintext_file);
 	remove(filename);
 
-	//Set up encryption
 	EVP_CIPHER_CTX ctx;
 	EVP_EncryptInit_ex(&ctx,EVP_aes_256_cbc(),NULL,key,iv);
 	EVP_EncryptUpdate(&ctx,c_buffer,&out1,p_buffer,file_length);
@@ -25,8 +21,6 @@ int encrypt (char * filename, unsigned char * key, unsigned char * iv)
 
 	FILE * encrypted_file = fopen(filename,"wb");
 	fwrite(c_buffer,1,out1 + out2,encrypted_file);
-
-	// Free memory
 
 	free(c_buffer);
 	free(p_buffer);
@@ -48,7 +42,6 @@ int decrypt(char * filename, unsigned char * key, unsigned char * iv)
 	fclose(encrypted_file);
 	remove(filename);
 
-	//set up decryption
 	EVP_CIPHER_CTX ctx;
 	EVP_DecryptInit_ex(&ctx,EVP_aes_256_cbc(),NULL,key,iv);
 	EVP_DecryptUpdate(&ctx,decrypted_file_buffer,&out1,encrypted_file_buffer,file_length);
