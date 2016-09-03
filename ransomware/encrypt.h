@@ -3,7 +3,6 @@
 
 
 
-#endif
 
 #include <openssl/evp.h>
 #include <string.h>
@@ -41,3 +40,5 @@ char * deconcat(char * filename)
 	return filename;
 }
 */
+
+#endif
