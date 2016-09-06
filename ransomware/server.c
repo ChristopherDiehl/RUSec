@@ -120,7 +120,7 @@ void * sessionAcceptor( void * args)
 void * connectionHandler( void * client_socket)
 {
 
-
+	printf("Connection made");
 	int socket = *(int *)client_socket; 
 	char buffer[BUFFER_SIZE];									  // char array to store data going to and coming from the socket
 	int closeWithoutMessage = FALSE;							 // int used to determine error message to send to client
@@ -133,6 +133,15 @@ void * connectionHandler( void * client_socket)
 	while(thread_exit != TRUE) 
 	{
 		bzero(buffer,BUFFER_SIZE);
+
+		n = write(socket,returnMessage,BUFFER_SIZE);
+
+		if (n < 0)
+		{
+			printf("[-] ERROR writing to the socket\n");
+			closeWithoutMessage = TRUE;
+			break;
+		}
 
 		// try to read from the client socket
 		n = read(socket,buffer,BUFFER_SIZE -1);

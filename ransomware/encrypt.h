@@ -23,22 +23,4 @@ char * deconcat(char * filename);
 
 #define BUFFSIZE 4096
 
-
-
-/*
-char * concat(char * filename)
-{
-	char * return_val = malloc(strlen(filename) +2);
-	strcpy(return_val,filename);
-	strcpy(return_val,"c");
-	return return_val;
-}
-
-char * deconcat(char * filename)
-{
-	filename[strlen(filename)-1] = '\0';
-	return filename;
-}
-*/
-
 #endif
