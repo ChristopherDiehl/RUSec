@@ -134,14 +134,6 @@ void * connectionHandler( void * client_socket)
 	{
 		bzero(buffer,BUFFER_SIZE);
 
-		n = write(socket,returnMessage,BUFFER_SIZE);
-
-		if (n < 0)
-		{
-			printf("[-] ERROR writing to the socket\n");
-			closeWithoutMessage = TRUE;
-			break;
-		}
 
 		// try to read from the client socket
 		n = read(socket,buffer,BUFFER_SIZE -1);
