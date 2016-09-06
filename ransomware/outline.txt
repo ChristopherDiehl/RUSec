@@ -4,3 +4,25 @@ RANSOMWARE:
 -use my previously created file transversal program to transverse all files/ lock em down...
 -do cool stuff
 -need to get rsa public key from server to setup public 
+
+
+
+So the encrypt.c will encrypt and decrypt the files
+
+
+not sure if I should delete encrypt afterwards then just have a decrypt file...
+need a server setup on my end to send results too
+-this server will return a key/ iv/ customer id which will be used to identify the computers
+-need a decrypt program which should just get the key/iv from the server while giving a customer id
+	-this server will need to validate bitcoin was recieved 
+	-also need a timestamp.. after 4 days then no go
+Need to setup a better driver,
+	-recursively go through all files
+	-exclude certain directories like system programs etc.. Need this computer to be usable
+	-Maybe free decryption of one? idk though
+Probably just delete my server.c program... don't need it unless I want to use the computer as a proxy... Maybe in future though
+-All I really need is just a driver at this point
+-This driver will need to connect to server 
+	-o and the customer id will need to be written down
+
+-TOR C&C server will be a java spring RESTful api... 
