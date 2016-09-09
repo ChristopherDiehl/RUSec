@@ -18,8 +18,6 @@
 size_t get_file_length(char * filename);
 int encrypt (char * filename, unsigned char * key, unsigned char * iv);
 int decrypt(char * filename, unsigned char * key, unsigned char * iv);
-char * concat(char * filename);
-char * deconcat(char * filename);
 
 #define BUFFSIZE 4096
 
