@@ -15,11 +15,9 @@ public class KeyIvLogic {
 	}
 	
 	public static byte [] getIv() throws NoSuchAlgorithmException{
-		SecureRandom randomSecureRandom = SecureRandom.getInstance("AES");
-		byte[] iv = new byte[124];
-		randomSecureRandom.nextBytes(iv);
-
-		IvParameterSpec ivParams = new IvParameterSpec(iv);
+		SecureRandom random = new SecureRandom();
+		byte[] iv = new byte[16];
+		random.nextBytes(iv);
 		return iv;
 	}
 }
