@@ -2,12 +2,18 @@ package com.ransomware;
 import org.springframework.data.annotation.Id;
 
 public class Infected {
+	
 	@Id
-	private String Id;
+	private String id;
 	private byte[] key;
 	private byte[] iv;
 	private String ip;
 	
+	public Infected(byte [] key, byte [] iv, String ip){
+		this.key = key;
+		this.iv = iv;
+		this.ip = ip;
+	}
 	public void setKey(byte [] key) {
 		this.key = key;
 	}
@@ -25,5 +31,13 @@ public class Infected {
 	}
 	public String getIp() {
 		return this.ip;
+	}
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+	public String getId()
+	{
+		return id;
 	}
 }
