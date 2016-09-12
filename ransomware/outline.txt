@@ -25,4 +25,10 @@ Probably just delete my server.c program... don't need it unless I want to use t
 -This driver will need to connect to server 
 	-o and the customer id will need to be written down
 
--TOR C&C server will be a java spring RESTful api... 
+-TOR C&C server will be a java spring RESTful api...
+
+-connect to TOR
+-first must have tor running
+-then must set tor as default proxy...localhost so 127.0.0.1 port 9050
+-then try to connect to .onion address of the hidden service..
+-to test, maybe simplify with an amazon ec2 instance and a curl GET request
