@@ -32,3 +32,5 @@ Probably just delete my server.c program... don't need it unless I want to use t
 -then must set tor as default proxy...localhost so 127.0.0.1 port 9050
 -then try to connect to .onion address of the hidden service..
 -to test, maybe simplify with an amazon ec2 instance and a curl GET request
+-connect to host server which connects to the tor service for me.. that gives another level of abstraction, makes it harder to find tor .onion site.
+	-alsoeasier to connect via c... TOR doesn't have to be running
