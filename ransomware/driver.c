@@ -61,7 +61,7 @@ char * _strncpy(char * string, int start, int end){
 //returns id, key, iv
 char ** parseJson(char * string, int len) 
 {
-
+	printf("%s\n",string);
 	int i = 0;
 	char ** return_val = malloc(sizeof(char*)*3);
 
@@ -98,7 +98,7 @@ int main (int argc, char ** argv)
 
 	curl = curl_easy_init();
 	if(curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "http://shellcoder.tech/sendEncrypt");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080/sendEncrypt");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
 		//curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
@@ -113,7 +113,10 @@ int main (int argc, char ** argv)
 
 
 		printf("%s\n", s.ptr);
+		char ** parsedResponse = parseJson(s.ptr,s.len);
 		free(s.ptr);
+		printf("%s\n",parsedResponse[0]);
+
 		curl_easy_cleanup(curl);
 	}
 
