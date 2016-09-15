@@ -6,8 +6,8 @@ EXECS = driver
 
 all:
 	$(CC) -c encrypt.c
-	$(CC) -c fileRecursor.c
-	$(CC) -c curlHelper.c -lcurl
+	$(CC) -c fileRecursor.c -lcrypto
+	$(CC) -c curlHelper.c -lcmurl
 
 
 	$(CC) $(CFLAGS) driver driver.c $(OBJECTS) -lcrypto -lcurl
