@@ -40,21 +40,15 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
   return size*nmemb;
 }
 
-char * _strncpy(char * string, int start, int end){
-	char * return_val = malloc(sizeof(char) *(end-start+1));
+char * charcpy(char * string, int start, int end){
+	char * return_val = malloc(sizeof(char) *(end-start));
 	int i = 0;
-	printf("Starting _strncpy\n");
 
 	for (i = start; i < end; i ++)
 	{
-		printf("%c",string[i]);
-		*return_val = string[i];
-		*return_val++;
+		return_val[i-start] = string[i];
 	}
-	
-	*return_val = '\0';
 
-	printf("\nreturn val: %s\n",return_val);
 	return return_val;
 
 }
@@ -68,24 +62,22 @@ char ** parseJson(char * string, int len)
 
 	for(i = 4; i < len; i ++)
 	{
-		if(counted == 2) {
-			break;
-		}
+
 		if(string[i] == ':')
 		{
 			i = i + 2;
-			printf("%d",string[i]);
 			int j = i;
 			while(string[j] != '"') {
 				j++;
 			}
+			return_val[counted] = charcpy(string,i,j);
 			counted ++;
-			*return_val = _strncpy(string,i,j);
-			printf("return_val : %s\n",*return_val);
-			*return_val++;
+
+			if(counted == 3)
+				break;
 		}
 	}
-	printf("\n========================\n");
+
 	return return_val;
 
 }
@@ -99,6 +91,7 @@ int main (int argc, char ** argv)
 	CURL *curl;
 	CURLcode res;
 	struct string s;
+	char ** parsedJson;
 	init_string(&s);
 
 	curl = curl_easy_init();
@@ -106,34 +99,31 @@ int main (int argc, char ** argv)
 		curl_easy_setopt(curl, CURLOPT_URL, "http://shellcoder.tech/sendEncrypt");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
-		//curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
-		/* Perform the request, res will get the return code */ 
 		res = curl_easy_perform(curl);
 
-		/* Check for errors */ 
 		if(res != CURLE_OK)
 			fprintf(stderr, "curl_easy_perform() failed: %s\n",
 		   curl_easy_strerror(res));
 
 
-		printf("%s\n", s.ptr);
-		char ** parsedResponse = parseJson(s.ptr,s.len);
+		parsedJson = parseJson(s.ptr,s.len);
 		free(s.ptr);
-		printf("%s\n",parsedResponse[0]);
 
 		curl_easy_cleanup(curl);
 	}
 
-	unsigned char * key = (unsigned char *)"01234567890123456789012345678901";
+	char * id = parsedJson[0];
 
-	unsigned char *iv = (unsigned char *)"01234567890123456";
+	unsigned char * key = (unsigned char *)parsedJson[1];
+
+	unsigned char *iv = (unsigned char *)parsedJson[2];
 
 	printf("[-] Encrypting Now\n");
-	//encrypt("plaintext.txt",key,iv);
+	encrypt("plaintext.txt",key,iv);
 	printf("[-] Encryption finished\n");
 
-	//decrypt("plaintext.txt",key,iv);
+	decrypt("plaintext.txt",key,iv);
 	printf("Decryption finished\n");
 	return 1;
 }
